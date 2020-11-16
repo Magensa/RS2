@@ -1,0 +1,29 @@
+﻿{
+  "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
+  "Version": "15.0.40203.910",
+  "GettingStartedDocument": {
+    "Uri": "https://go.microsoft.com/fwlink/?linkid=858517"
+  },
+  "ExtendedData": {
+    "inputs": [
+      "https://devgw.magensa.dev/RemoteServicesV2/EMV.svc"
+    ],
+    "collectionTypes": [
+      "System.Array",
+      "System.Collections.Generic.Dictionary`2"
+    ],
+    "namespaceMappings": [
+      "*, Magensa.EMV.Services"
+    ],
+    "references": [
+      "E:\\magtek\\RemoteServicesV2_DotNetCore\\EMVSamples\\EMV.ServiceFactory\\bin\\Debug\\netcoreapp3.1\\EMV.Dtos.dll",
+      "Microsoft.Extensions.Configuration, {Microsoft.Extensions.Configuration, 2.2.0}",
+      "Microsoft.Extensions.Configuration.Abstractions, {Microsoft.Extensions.Configuration.Abstractions, 2.2.0}",
+      "Microsoft.Extensions.Configuration.Binder, {Microsoft.Extensions.Configuration.Binder, 2.2.0}",
+      "Microsoft.Extensions.Primitives, {Microsoft.Extensions.Primitives, 2.2.0}",
+      "System.Runtime.CompilerServices.Unsafe, {System.Runtime.CompilerServices.Unsafe, 4.5.1}"
+    ],
+    "targetFramework": "netcoreapp3.1",
+    "typeReuseMode": "All"
+  }
+}
