@@ -2,6 +2,9 @@
 
 namespace PPSCRAv2.ServiceFactory
 {
+    /// <summary>
+    /// Inspects PPSCRAv2 soap request to modify or to view the soaprequest/soapresponse.
+    /// </summary>
     public class PPSCRAv2MessageInspector : IClientMessageInspector
     {
         public string LastRequestXML { get; private set; }

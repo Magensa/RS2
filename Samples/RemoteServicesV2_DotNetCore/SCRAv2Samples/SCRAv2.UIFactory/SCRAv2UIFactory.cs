@@ -11,6 +11,9 @@ using System.Xml.Linq;
 
 namespace SCRAv2.UIFactory
 {
+    /// <summary>
+    /// Factory of SCRAv2 Operations
+    /// </summary>    
     public class SCRAv2UIFactory : ISCRAv2UIFactory
     {
         readonly IServiceProvider _serviceProvider;
@@ -67,14 +70,18 @@ namespace SCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetCommandByKSN(request).Result;
-                if (responseDto != null)
+                var result = svc.GetCommandByKSN(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetCommandByKSNResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
                 }
                 else
                 {
@@ -103,14 +110,18 @@ namespace SCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetCommandByMUT(request).Result;
-                if (responseDto != null)
+                var result = svc.GetCommandByMUT(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetCommandByMUTResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
                 }
                 else
                 {
@@ -139,14 +150,18 @@ namespace SCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetFirmwareByMUT(request).Result;
-                if (responseDto != null)
+                var result = svc.GetFirmwareByMUT(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetFirmwareByMUTResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
                 }
                 else
                 {
@@ -169,8 +184,7 @@ namespace SCRAv2.UIFactory
                 request.Password = Read_String_Input("Please enter the Password:", false);
                 request.BillingLabel = Read_String_Input("Please enter the BillingLabel:", true);
                 request.CustomerTransactionId = Read_String_Input("Please enter the CustomerTransactionID:", true);
-                request.AdditionalRequestData_Key = Read_String_Input("Please enter the AdditionalRequestData_Key:", true);
-                request.AdditionalRequestData_Value = Read_String_Input("Please enter the AdditionalRequestData_Value:", true);
+                request.AdditionalRequestData = Read_MultipleKeysInput("AdditionalRequestData");
                 request.DeviceType = Read_String_Input("Please enter the DeviceType:", true);
                 //developer comments: Firmware will have long input 
                 //increase the buffer size in Read_LongString_Input function based on the requirement
@@ -181,14 +195,18 @@ namespace SCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetFirmwareCommands(request).Result;
-                if (responseDto != null)
+                var result = svc.GetFirmwareCommands(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetFirmwareCommandsResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
                 }
                 else
                 {
@@ -215,14 +233,18 @@ namespace SCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetCommandList(request).Result;
-                if (responseDto != null)
+                var result = svc.GetCommandList(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetCommandListResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
                 }
                 else
                 {
@@ -249,14 +271,18 @@ namespace SCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetFirmwareList(request).Result;
-                if (responseDto != null)
+                var result = svc.GetFirmwareList(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetFirmwareListResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
                 }
                 else
                 {
@@ -280,17 +306,21 @@ namespace SCRAv2.UIFactory
                 request.BillingLabel = Read_String_Input("Please enter the BillingLabel:", true);
                 request.CustomerTransactionId = Read_String_Input("Please enter the CustomerTransactionID:", true);
 
-
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetKeyList(request).Result;
-                if (responseDto != null)
+                var result = svc.GetKeyList(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetKeyListResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
+
                 }
                 else
                 {
@@ -319,14 +349,18 @@ namespace SCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<ISCRAv2Client>();
-                var responseDto = svc.GetKeyLoadCommand(request).Result;
-                if (responseDto != null)
+                var result = svc.GetKeyLoadCommand(request).Result;
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetKeyLoadCommandResponseDto;
                     Console.WriteLine("=====================Response Start======================");
+                    Console.WriteLine("Request:");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
                     Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
                     Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Parsed Response Start======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("=====================Parsed Response End======================");
                 }
                 else
                 {
@@ -390,6 +424,11 @@ namespace SCRAv2.UIFactory
             }
             return strInput;
         }
+        /// <summary>
+        /// validates string is a valid xml or not
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns></returns>
         public static bool IsValidXml(string xml)
         {
             try
@@ -402,6 +441,11 @@ namespace SCRAv2.UIFactory
                 return false;
             }
         }
+        /// <summary>
+        /// Validates the xml string input and returns the formatted xml string
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns></returns>
         public static string PrettyXml(string xml)
         {
             if (IsValidXml(xml)) //print xml in beautiful format
@@ -425,7 +469,18 @@ namespace SCRAv2.UIFactory
                 return xml;
             }
         }
-
+        private static List<KeyValuePair<string, string>> Read_MultipleKeysInput(string question)
+        {
+            var noOfKeys = Read_Int_Input($"Please Enter No of Keys for {question}");
+            var result = new List<KeyValuePair<string, string>>();
+            for (int i = 0; i < noOfKeys; i++)
+            {
+                var key = Read_String_Input("Key", true);
+                var val = Read_String_Input("Value", true);
+                result.Add(new KeyValuePair<string, string>(key, val));
+            }
+            return result;
+        }
         private static int Read_Int_Input(string userMessage)
         {
             Console.WriteLine(userMessage);

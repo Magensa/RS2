@@ -3,8 +3,9 @@ using Microsoft.Extensions.Configuration;
 using PPSCRAv2.Dtos;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 using System.ServiceModel;
-using System.Threading.Tasks;
 
 namespace PPSCRAv2.ServiceFactory
 {
@@ -18,8 +19,9 @@ namespace PPSCRAv2.ServiceFactory
             Host = new Uri(_config.GetValue<string>(Constants.SERVICEURL));
         }
 
-        public async Task<GetCertLoadCommandResponseDto> GetCertLoadCommand(GetCertLoadCommandRequestDto dto)
+        public (GetCertLoadCommandResponseDto Response, RawSoapDetails SoapDetails) GetCertLoadCommand(GetCertLoadCommandRequestDto dto)
         {
+            (GetCertLoadCommandResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             var responseDto = new GetCertLoadCommandResponseDto();
             try
             {
@@ -42,19 +44,38 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetCertLoadCommandAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetCertLoadCommandAsync(soapRequest).Result;
+                
+                responseDto.AdditionalOutputData = soapResponse.AdditionalOutputData;
+                var cmd = new Dtos.Command()
+                {
+                    CommandType = soapResponse.Command.CommandType,
+                    Description = soapResponse.Command.Description,
+                    ID = soapResponse.Command.ID,
+                    Name = soapResponse.Command.Name,
+                    Value = soapResponse.Command.Value,
+                    ExecutionTypeEnum = soapResponse.Command.ExecutionTypeEnum
+                };
+                responseDto.Command = cmd;
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetCommandListByDeviceResponseDto> GetCommandListByDevice(GetCommandListByDeviceRequestDto dto)
+        public (GetCommandListByDeviceResponseDto Response, RawSoapDetails SoapDetails) GetCommandListByDevice(GetCommandListByDeviceRequestDto dto)
         {
+            (GetCommandListByDeviceResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             var responseDto = new GetCommandListByDeviceResponseDto();
             try
             {
@@ -74,19 +95,37 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetCommandListByDeviceAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetCommandListByDeviceAsync(soapRequest).Result;
+                responseDto.AdditionalOutputData = soapResponse.AdditionalOutputData;
+                responseDto.Commands = new List<Dtos.Command>();
+                soapResponse.Commands.ToList().ForEach(cmd => responseDto.Commands.Add(new Dtos.Command()
+                {
+                    CommandType = cmd.CommandType,
+                    Description = cmd.Description,
+                    ID = cmd.ID,
+                    Name = cmd.Name,
+                    Value = cmd.Value,
+                    ExecutionTypeEnum = cmd.ExecutionTypeEnum
+                }));
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetDeviceAuthCommandResponseDto> GetDeviceAuthCommand(GetDeviceAuthCommandRequestDto dto)
+        public (GetDeviceAuthCommandResponseDto Response, RawSoapDetails SoapDetails) GetDeviceAuthCommand(GetDeviceAuthCommandRequestDto dto)
         {
+            (GetDeviceAuthCommandResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             var responseDto = new GetDeviceAuthCommandResponseDto();
             try
             {
@@ -109,19 +148,39 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetDeviceAuthCommandAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetDeviceAuthCommandAsync(soapRequest).Result;
+                responseDto.AdditionalOutputData = soapResponse.AdditionalOutputData;
+                var cmd = new Dtos.Command()
+                {
+                    CommandType = soapResponse.Command.CommandType,
+                    Description = soapResponse.Command.Description,
+                    ID = soapResponse.Command.ID,
+                    Name = soapResponse.Command.Name,
+                    Value = soapResponse.Command.Value,
+                    ExecutionTypeEnum = soapResponse.Command.ExecutionTypeEnum
+                };
+                responseDto.Command = cmd;
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+                responseDto.KCV = soapResponse.KCV;
+                responseDto.KeyType = soapResponse.KeyType;
+
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetEnableSREDCommandResponseDto> GetEnableSREDCommand(GetEnableSREDCommandRequestDto dto)
+        public (GetEnableSREDCommandResponseDto Response, RawSoapDetails SoapDetails) GetEnableSREDCommand(GetEnableSREDCommandRequestDto dto)
         {
+            (GetEnableSREDCommandResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             var responseDto = new GetEnableSREDCommandResponseDto();
             try
             {
@@ -144,19 +203,37 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetEnableSREDCommandAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetEnableSREDCommandAsync(soapRequest).Result;
+                responseDto.AdditionalOutputData = soapResponse.AdditionalOutputData;
+                var cmd = new Dtos.Command()
+                {
+                    CommandType = soapResponse.Command.CommandType,
+                    Description = soapResponse.Command.Description,
+                    ID = soapResponse.Command.ID,
+                    Name = soapResponse.Command.Name,
+                    Value = soapResponse.Command.Value,
+                    ExecutionTypeEnum = soapResponse.Command.ExecutionTypeEnum
+                };
+                responseDto.Command = cmd;
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetKeyListResponseDto> GetKeyList(GetKeyListRequestDto dto)
+        public (GetKeyListResponseDto Response, RawSoapDetails SoapDetails) GetKeyList(GetKeyListRequestDto dto)
         {
+            (GetKeyListResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             var responseDto = new GetKeyListResponseDto();
             try
             {
@@ -174,19 +251,37 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetKeyListAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetKeyListAsync(soapRequest).Result;
+                responseDto.PPScraKeys = new List<Dtos.PPSCRAKey>();
+                soapResponse.Keys.ToList().ForEach(pkey => responseDto.PPScraKeys.Add(new Dtos.PPSCRAKey()
+                {
+                    Description = pkey.Description,
+                    ID = pkey.ID,
+                    KeyName = pkey.KeyName,
+                    KSI = pkey.KSI,
+                    KeySlotNamePrefix = pkey.KeySlotNamePrefix
+
+                }));
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+
+
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetKeyLoadCommandResponseDto> GetKeyLoadCommand(GetKeyLoadCommandRequestDto dto)
+        public (GetKeyLoadCommandResponseDto Response, RawSoapDetails SoapDetails) GetKeyLoadCommand(GetKeyLoadCommandRequestDto dto)
         {
+            (GetKeyLoadCommandResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             var responseDto = new GetKeyLoadCommandResponseDto();
             try
             {
@@ -211,20 +306,42 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetKeyLoadCommandAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetKeyLoadCommandAsync(soapRequest).Result;
+                responseDto.AdditionalOutputData = soapResponse.AdditionalOutputData;
+                var cmd = new Dtos.Command()
+                {
+                    CommandType = soapResponse.Command.CommandType,
+                    Description = soapResponse.Command.Description,
+                    ID = soapResponse.Command.ID,
+                    Name = soapResponse.Command.Name,
+                    Value = soapResponse.Command.Value,
+                    ExecutionTypeEnum = soapResponse.Command.ExecutionTypeEnum
+                };
+                responseDto.Command = cmd;
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+                responseDto.BaseKCV = soapResponse.BaseKCV;
+                responseDto.DukptKCV = soapResponse.DukptKCV;
+                responseDto.KeyPrefix = soapResponse.KeyPrefix;
+                responseDto.KeyType = soapResponse.KeyType;
+
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetLoadConfigCommandResponseDto> GetLoadConfigCommand(GetLoadConfigCommandRequestDto dto)
+        public (GetLoadConfigCommandResponseDto Response, RawSoapDetails SoapDetails) GetLoadConfigCommand(GetLoadConfigCommandRequestDto dto)
         {
-            var responseDto = new GetLoadConfigCommandResponseDto();
+            (GetLoadConfigCommandResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
+            
             try
             {
                 var soapRequest = new GetLoadConfigCommandRequest
@@ -259,20 +376,39 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetLoadConfigCommandAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetLoadConfigCommandAsync(soapRequest).Result;
+                var responseDto = new GetLoadConfigCommandResponseDto();
+                responseDto.AdditionalOutputData = soapResponse.AdditionalOutputData;
+                var cmd = new Dtos.Command()
+                {
+                    CommandType = soapResponse.Command.CommandType,
+                    Description = soapResponse.Command.Description,
+                    ID = soapResponse.Command.ID,
+                    Name = soapResponse.Command.Name,
+                    Value = soapResponse.Command.Value,
+                    ExecutionTypeEnum = soapResponse.Command.ExecutionTypeEnum
+                };
+                responseDto.Command = cmd;
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+                responseDto.TargetConfig = soapResponse.TargetConfig;
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetPreActivateCommandResponseDto> GetPreActivateCommand(GetPreActivateCommandRequestDto dto)
+        public (GetPreActivateCommandResponseDto Response, RawSoapDetails SoapDetails) GetPreActivateCommand(GetPreActivateCommandRequestDto dto)
         {
-            var responseDto = new GetPreActivateCommandResponseDto();
+            (GetPreActivateCommandResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
+            
             try
             {
                 var soapRequest = new GetPreActivateCommandRequest
@@ -296,16 +432,33 @@ namespace PPSCRAv2.ServiceFactory
                 var svcClient = new Magensa.PPSCRAv2.Services.PPSCRAv2Client();
                 var requestInterceptor = new PPSCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                var soapResponse = await svcClient.GetPreActivateCommandAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var soapResponse = svcClient.GetPreActivateCommandAsync(soapRequest).Result;
+                var responseDto = new GetPreActivateCommandResponseDto();
+                responseDto.AdditionalOutputData = soapResponse.AdditionalOutputData;
+                var cmd = new Dtos.Command()
+                {
+                    CommandType = soapResponse.Command.CommandType,
+                    Description = soapResponse.Command.Description,
+                    ID = soapResponse.Command.ID,
+                    Name = soapResponse.Command.Name,
+                    Value = soapResponse.Command.Value,
+                    ExecutionTypeEnum = soapResponse.Command.ExecutionTypeEnum
+                };
+                responseDto.Command = cmd;
+                responseDto.CustomerTransactionId = soapResponse.CustomerTransactionId;
+                responseDto.MagTranId = soapResponse.MagTranId;
+                result.SoapDetails = new RawSoapDetails
+                {
+                    RequestXml = requestInterceptor.LastRequestXML,
+                    ResponseXml = requestInterceptor.LastResponseXML
+                };
+                result.Response = responseDto;
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
     }
 }

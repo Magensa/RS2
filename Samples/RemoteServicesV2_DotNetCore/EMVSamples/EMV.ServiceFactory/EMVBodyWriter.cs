@@ -1,21 +1,37 @@
-﻿using System.ServiceModel.Channels;
+﻿using System.Collections.Generic;
+using System.ServiceModel.Channels;
 using System.Xml;
 
 namespace EMV.ServiceFactory
 {
+    /// <summary>
+    /// writes custom soap body
+    /// </summary>
     public class EMVBodyWriter : BodyWriter
     {
-        readonly string body;
+        private readonly string body;
+        public List<KeyValuePair<string, string>> ModifyTags { get; set; }
         public EMVBodyWriter(string strData) : base(true)
         {
             body = strData;
         }
         protected override void OnWriteBodyContents(XmlDictionaryWriter writer)
         {
-            //developer comments: The default behaviour of the soap message 
-            //encodes the cdata tags . The encoded values will be sent to soap service and the soap request fails
-            //therefore replacing the encoded tags
-            var modifiedBody = body.Replace("&lt;", "<").Replace("&gt;", ">");
+            var modifiedBody = body;
+            if (ModifyTags != null)
+            {
+                foreach (var item in ModifyTags)
+                {
+                    if ((item.Key.Trim() == "") && (item.Value.Trim() == ""))
+                    {
+                        //no need to modify
+                    }
+                    else
+                    {
+                        modifiedBody = modifiedBody.Replace(item.Key, item.Value);
+                    }
+                }
+            }
             writer.WriteRaw(modifiedBody);
         }
     }

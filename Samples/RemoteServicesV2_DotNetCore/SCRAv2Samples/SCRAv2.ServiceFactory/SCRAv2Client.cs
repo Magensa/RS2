@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using SCRAv2.Dtos;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 
@@ -16,9 +18,9 @@ namespace SCRAv2.ServiceFactory
             _config = config;
             Host = new Uri(_config.GetValue<string>(Constants.SCRAV2SERVICEURL));
         }
-        public async Task<GetCommandByKSNResponseDto> GetCommandByKSN(GetCommandByKSNRequestDto dto)
+        public async Task<(GetCommandByKSNResponseDto Response, RawSoapDetails SoapDetails)> GetCommandByKSN(GetCommandByKSNRequestDto dto)
         {
-            var responseDto = new GetCommandByKSNResponseDto();
+            (GetCommandByKSNResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
 
             try
             {
@@ -37,22 +39,40 @@ namespace SCRAv2.ServiceFactory
                     CommandID = dto.CommandID
                 };
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
-                var requestInterceptor = new SCRAv2InspectorBehavior();
-                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetCommandByKSNAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var requestInterceptorBehavior = new SCRAv2InspectorBehavior();
+                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptorBehavior);
+                var svcResponse = await svcClient.GetCommandByKSNAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptorBehavior.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptorBehavior.LastResponseXML;
+
+                if (svcResponse != null)
+                {
+                    result.Response = new GetCommandByKSNResponseDto
+                    {
+                        CustomerTransactionId = svcResponse.CustomerTransactionId,
+                        MagTranId = svcResponse.MagTranId,
+                        Command = new Dtos.Command
+                        {
+                            CommandType = svcResponse.Command.CommandType,
+                            Description = svcResponse.Command.Description,
+                            ExecutionTypeEnum = svcResponse.Command.ExecutionTypeEnum,
+                            ID = svcResponse.Command.ID,
+                            Name = svcResponse.Command.Name,
+                            Value = svcResponse.Command.Value
+                        }
+                    };
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetCommandByMUTResponseDto> GetCommandByMUT(GetCommandByMUTRequestDto dto)
+        public async Task<(GetCommandByMUTResponseDto Response, RawSoapDetails SoapDetails)> GetCommandByMUT(GetCommandByMUTRequestDto dto)
         {
-            var responseDto = new GetCommandByMUTResponseDto();
+            (GetCommandByMUTResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             try
             {
                 var soapRequest = new GetCommandByMUTRequest
@@ -72,21 +92,37 @@ namespace SCRAv2.ServiceFactory
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
                 var requestInterceptor = new SCRAv2InspectorBehavior();
                 svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetCommandByMUTAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
-
+                var svcResponse = await svcClient.GetCommandByMUTAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptor.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptor.LastResponseXML;
+                if (svcResponse != null)
+                {
+                    result.Response = new GetCommandByMUTResponseDto()
+                    {
+                        CustomerTransactionId = svcResponse.CustomerTransactionId,
+                        MagTranId = svcResponse.MagTranId,
+                        Command = new Dtos.Command
+                        {
+                            CommandType = svcResponse.Command.CommandType,
+                            Description = svcResponse.Command.Description,
+                            ExecutionTypeEnum = svcResponse.Command.ExecutionTypeEnum,
+                            ID = svcResponse.Command.ID,
+                            Name = svcResponse.Command.Name,
+                            Value = svcResponse.Command.Value
+                        }
+                    };
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetCommandListResponseDto> GetCommandList(GetCommandListRequestDto dto)
+        public async Task<(GetCommandListResponseDto Response, RawSoapDetails SoapDetails)> GetCommandList(GetCommandListRequestDto dto)
         {
-            var responseDto = new GetCommandListResponseDto();
+            (GetCommandListResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             try
             {
                 var soapRequest = new GetCommandListRequest
@@ -102,22 +138,43 @@ namespace SCRAv2.ServiceFactory
                     ExecutionType = dto.ExecutionType
                 };
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
-                var requestInterceptor = new SCRAv2InspectorBehavior();
-                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetCommandListAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var requestInterceptorBehavior = new SCRAv2InspectorBehavior();
+                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptorBehavior);
+                var svcResponse = await svcClient.GetCommandListAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptorBehavior.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptorBehavior.LastResponseXML;
+
+                if (svcResponse != null)
+                {
+                    result.Response = new GetCommandListResponseDto();
+                    result.Response.CustomerTransactionId = svcResponse.CustomerTransactionId;
+                    result.Response.MagTranId = svcResponse.MagTranId;
+                    result.Response.Commands = new System.Collections.Generic.List<Dtos.Command>();
+                    svcResponse.Commands.ToList().ForEach(x =>
+                    {
+                        var temp = new Dtos.Command()
+                        {
+                            CommandType = x.CommandType,
+                            Description = x.Description,
+                            ExecutionTypeEnum = x.ExecutionTypeEnum,
+                            ID = x.ID,
+                            Name = x.Name,
+                            Value = x.Value
+                        };
+                        result.Response.Commands.Add(temp);
+                    });
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetFirmwareByMUTResponseDto> GetFirmwareByMUT(GetFirmwareByMUTRequestDto dto)
+        public async Task<(GetFirmwareByMUTResponseDto Response, RawSoapDetails SoapDetails)> GetFirmwareByMUT(GetFirmwareByMUTRequestDto dto)
         {
-            var responseDto = new GetFirmwareByMUTResponseDto();
+            (GetFirmwareByMUTResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             try
             {
                 var soapRequest = new GetFirmwareByMUTRequest
@@ -135,23 +192,52 @@ namespace SCRAv2.ServiceFactory
                     UpdateToken = dto.UpdateToken
                 };
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
-                var requestInterceptor = new SCRAv2InspectorBehavior();
-                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetFirmwareByMUTAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var requestInterceptorBehavior = new SCRAv2InspectorBehavior();
+                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptorBehavior);
+                var svcResponse = await svcClient.GetFirmwareByMUTAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptorBehavior.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptorBehavior.LastResponseXML;
 
+                if (svcResponse != null)
+                {
+                    result.Response = new GetFirmwareByMUTResponseDto();
+                    result.Response.CustomerTransactionId = svcResponse.CustomerTransactionId;
+                    result.Response.MagTranId = svcResponse.MagTranId;
+                    result.Response.Firmware = new Dtos.Firmware();
+                    result.Response.Firmware.DateCreated = svcResponse.Firmware.DateCreated;
+                    result.Response.Firmware.DateModified = svcResponse.Firmware.DateModified;
+                    result.Response.Firmware.Description = svcResponse.Firmware.Description;
+                    result.Response.Firmware.File = svcResponse.Firmware.File;
+                    result.Response.Firmware.ID = svcResponse.Firmware.ID;
+                    result.Response.Firmware.Name = svcResponse.Firmware.Name;
+                    result.Response.Firmware.PartNumber = svcResponse.Firmware.PartNumber;
+                    result.Response.Firmware.PostloadCommands = new List<Dtos.FirmwareCommand>();
+                    svcResponse.Firmware.PostloadCommands.ToList().ForEach(x =>
+                    {
+                        var temp = new Dtos.FirmwareCommand() { Value = x.Value, Operation = x.Operation };
+                        result.Response.Firmware.PostloadCommands.Add(temp);
+                    });
+                    result.Response.Firmware.PreloadCommands = new List<Dtos.FirmwareCommand>();
+                    svcResponse.Firmware.PreloadCommands.ToList().ForEach(x =>
+                    {
+                        var temp = new Dtos.FirmwareCommand() { Value = x.Value, Operation = x.Operation };
+                        result.Response.Firmware.PreloadCommands.Add(temp);
+                    });
+                    result.Response.Firmware.TargetID = svcResponse.Firmware.TargetID;
+                    result.Response.Firmware.Type = svcResponse.Firmware.Type;
+                    result.Response.Firmware.Version = svcResponse.Firmware.Version;
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetFirmwareCommandsResponseDto> GetFirmwareCommands(GetFirmwareCommandsRequestDto dto)
+        public async Task<(GetFirmwareCommandsResponseDto Response, RawSoapDetails SoapDetails)> GetFirmwareCommands(GetFirmwareCommandsRequestDto dto)
         {
-            var responseDto = new GetFirmwareCommandsResponseDto();
+            (GetFirmwareCommandsResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             try
             {
                 var soapRequest = new GetFirmwareCommandsRequest
@@ -165,28 +251,59 @@ namespace SCRAv2.ServiceFactory
                     BillingLabel = dto.BillingLabel,
                     CustomerTransactionID = dto.CustomerTransactionId,
                     DeviceType = dto.DeviceType,
-                    Firmware= System.Text.Encoding.UTF8.GetBytes(dto.Firmware),                     
+                    Firmware = System.Text.Encoding.UTF8.GetBytes(dto.Firmware),
                     KSN = dto.KSN,
                     KeyID = dto.KeyID,
-                    SerialNumber = dto.SerialNumber
+                    SerialNumber = dto.SerialNumber,
+                    AdditionalRequestData = dto.AdditionalRequestData.ToArray()
                 };
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
-                var requestInterceptor = new SCRAv2InspectorBehavior();
-                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetFirmwareCommandsAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var requestInterceptorBehavior = new SCRAv2InspectorBehavior();
+                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptorBehavior);
+                var svcResponse = await svcClient.GetFirmwareCommandsAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptorBehavior.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptorBehavior.LastResponseXML;
+
+                if (svcResponse != null)
+                {
+                    result.Response = new GetFirmwareCommandsResponseDto();
+                    result.Response.CustomerTransactionId = svcResponse.CustomerTransactionId;
+                    result.Response.MagTranId = svcResponse.MagTranId;
+                    result.Response.Commands = new List<string>();
+                    svcResponse.Commands.ToList().ForEach(x =>
+                    {
+                        result.Response.Commands.Add(x);
+                    });
+                    result.Response.PostloadCommands = new List<Dtos.FirmwareCommand>();
+                    svcResponse.PostloadCommands.ToList().ForEach(x =>
+                    {
+                        result.Response.PostloadCommands.Add(new Dtos.FirmwareCommand()
+                        {
+                            Operation = x.Operation,
+                            Value = x.Value
+                        });
+                    });
+                    result.Response.PreloadCommands = new List<Dtos.FirmwareCommand>();
+                    svcResponse.PreloadCommands.ToList().ForEach(x =>
+                    {
+                        result.Response.PreloadCommands.Add(new Dtos.FirmwareCommand()
+                        {
+                            Operation = x.Operation,
+                            Value = x.Value
+                        });
+                    });
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetFirmwareListResponseDto> GetFirmwareList(GetFirmwareListRequestDto dto)
+        public async Task<(GetFirmwareListResponseDto Response, RawSoapDetails SoapDetails)> GetFirmwareList(GetFirmwareListRequestDto dto)
         {
-            var responseDto = new GetFirmwareListResponseDto();
+            (GetFirmwareListResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             try
             {
                 var soapRequest = new GetFirmwareListRequest
@@ -202,26 +319,73 @@ namespace SCRAv2.ServiceFactory
                     FirmwareType = dto.FirmwareType
                 };
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
-                var requestInterceptor = new SCRAv2InspectorBehavior();
-                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetFirmwareListAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var requestInterceptorBehavior = new SCRAv2InspectorBehavior();
+                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptorBehavior);
+                var svcResponse = await svcClient.GetFirmwareListAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptorBehavior.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptorBehavior.LastResponseXML;
+                if (svcResponse != null)
+                {
+                    result.Response = new GetFirmwareListResponseDto();
+                    result.Response.CustomerTransactionId = svcResponse.CustomerTransactionId;
+                    result.Response.MagTranId = svcResponse.MagTranId;
+                    result.Response.Firmwares = new List<Dtos.Firmware>();
+                    foreach (var f in svcResponse.Firmwares.ToList())
+                    {
+                        var fw = new Dtos.Firmware();
+                        fw.DateCreated = f.DateCreated;
+                        fw.DateModified = f.DateModified;
+                        fw.Description = f.Description;
+                        fw.File = f.File;
+                        fw.ID = f.ID;
+                        fw.Name = f.Name;
+                        fw.PartNumber = f.PartNumber;
 
+                        if (f.PostloadCommands != null)
+                        {
+                            fw.PostloadCommands = new List<Dtos.FirmwareCommand>();
+                            foreach (var plc in f.PostloadCommands)
+                            {
+                                fw.PostloadCommands.Add(new Dtos.FirmwareCommand()
+                                {
+                                    Operation = plc.Operation,
+                                    Value = plc.Value
+                                });
+
+                            }
+                        }
+                        if (f.PreloadCommands != null)
+                        {
+                            fw.PreloadCommands = new List<Dtos.FirmwareCommand>();
+                            foreach (var plc in f.PreloadCommands)
+                            {
+                                fw.PreloadCommands.Add(new Dtos.FirmwareCommand()
+                                {
+                                    Operation = plc.Operation,
+                                    Value = plc.Value
+                                });
+                            }
+                        }
+                        fw.TargetID = f.TargetID;
+                        fw.Type = f.Type;
+                        fw.Version = f.Version;
+                        result.Response.Firmwares.Add(fw);
+                    }
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetKeyListResponseDto> GetKeyList(GetKeyListRequestDto dto)
+        public async Task<(GetKeyListResponseDto Response, RawSoapDetails SoapDetails)> GetKeyList(GetKeyListRequestDto dto)
         {
-            var responseDto = new GetKeyListResponseDto();
+            (GetKeyListResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             try
             {
-                GetKeyListRequest soapRequest = new GetKeyListRequest
+                var soapRequest = new GetKeyListRequest
                 {
                     Authentication = new Authentication()
                     {
@@ -232,26 +396,47 @@ namespace SCRAv2.ServiceFactory
                     BillingLabel = dto.BillingLabel,
                     CustomerTransactionID = dto.CustomerTransactionId
                 };
+
+
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
-                var requestInterceptor = new SCRAv2InspectorBehavior();
-                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetKeyListAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var requestInterceptorBehavior = new SCRAv2InspectorBehavior();
+                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptorBehavior);
+                var svcResponse = await svcClient.GetKeyListAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptorBehavior.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptorBehavior.LastResponseXML;
+                if (svcResponse != null)
+                {
+                    result.Response = new GetKeyListResponseDto();
+                    result.Response.CustomerTransactionId = svcResponse.CustomerTransactionId;
+                    result.Response.MagTranId = svcResponse.MagTranId;
+                    result.Response.ScravKeys = new List<Dtos.SCRAvkey>();
+                    foreach (var key in svcResponse.Keys.ToList())
+                    {
+                        result.Response.ScravKeys.Add(new Dtos.SCRAvkey
+                        {
+                            Description = key.Description,
+                            ID = key.ID,
+                            KeyName = key.KeyName,
+                            KeySlotNamePrefix = key.KeySlotNamePrefix,
+                            KSI = key.KSI
+
+                        });
+                    }
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
-        public async Task<GetKeyLoadCommandResponseDto> GetKeyLoadCommand(GetKeyLoadCommandRequestDto dto)
+        public async Task<(GetKeyLoadCommandResponseDto Response, RawSoapDetails SoapDetails)> GetKeyLoadCommand(GetKeyLoadCommandRequestDto dto)
         {
-            var responseDto = new GetKeyLoadCommandResponseDto();
+            (GetKeyLoadCommandResponseDto Response, RawSoapDetails SoapDetails) result = (default, default);
             try
             {
-                GetKeyLoadCommandRequest soapRequest = new GetKeyLoadCommandRequest
+                var soapRequest = new GetKeyLoadCommandRequest
                 {
                     Authentication = new Authentication()
                     {
@@ -266,18 +451,37 @@ namespace SCRAv2.ServiceFactory
                     UpdateToken = dto.UpdateToken
                 };
                 var svcClient = new Magensa.SCRAv2.Services.SCRAv2Client();
-                var requestInterceptor = new SCRAv2InspectorBehavior();
-                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptor);
-                _ = await svcClient.GetKeyLoadCommandAsync(soapRequest);
-                _ = requestInterceptor.LastRequestXML;
-                string responseXML = requestInterceptor.LastResponseXML;
-                responseDto.PageContent = responseXML;
+                var requestInterceptorBehavior = new SCRAv2InspectorBehavior();
+                svcClient.Endpoint.EndpointBehaviors.Add(requestInterceptorBehavior);
+                var svcResponse = await svcClient.GetKeyLoadCommandAsync(soapRequest);
+                result.SoapDetails = new RawSoapDetails();
+                result.SoapDetails.RequestXml = requestInterceptorBehavior.LastRequestXML;
+                result.SoapDetails.ResponseXml = requestInterceptorBehavior.LastResponseXML;
+                if (svcResponse != null)
+                {
+                    result.Response = new GetKeyLoadCommandResponseDto();
+                    result.Response.CustomerTransactionId = svcResponse.CustomerTransactionId;
+                    result.Response.MagTranId = svcResponse.MagTranId;
+                    result.Response.Commands = new List<Dtos.Command>();
+                    foreach (var cmd in svcResponse.Commands.ToList())
+                    {
+                        result.Response.Commands.Add(new Dtos.Command
+                        {
+                            CommandType = cmd.CommandType,
+                            Description = cmd.Description,
+                            ExecutionTypeEnum = cmd.ExecutionTypeEnum,
+                            ID = cmd.ID,
+                            Name = cmd.Name,
+                            Value = cmd.Value
+                        });
+                    }
+                }
             }
             catch (Exception ex) when (ex is CommunicationException || ex is ProtocolException || ex is FaultException || ex is Exception)
             {
                 throw ex;
             }
-            return responseDto;
+            return result;
         }
     }
 }

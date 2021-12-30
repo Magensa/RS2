@@ -4,6 +4,6 @@ namespace EMV.ServiceFactory
 {
     public interface IEMVClient
     {
-        GetEMVCommandsResponseDto GetEMVCommands(GetEMVCommandsRequestDto dto);
+        (GetEMVCommandsResponseDto Response, RawSoapDetails SoapDetails) GetEMVCommands(GetEMVCommandsRequestDto dto);
     }
 }

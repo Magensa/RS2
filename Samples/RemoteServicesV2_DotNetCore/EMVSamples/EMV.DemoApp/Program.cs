@@ -4,12 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
+using static System.Console;
 
 
 namespace DecryptV2.DemoApp
 {
     class Program
     {
+
         static void Main()
         {
             _ = new ConfigurationBuilder()
@@ -28,18 +30,18 @@ namespace DecryptV2.DemoApp
             var uiFactory = serviceProvider.GetService<IEMVUIFactory>();
 
             var svcUrl = config.GetValue<string>("EMVURL");
-            Console.WriteLine($"Webservice Url:-{svcUrl}");
+            WriteLine($"Webservice Url:-{svcUrl}");
 
             while (true)
             {
                 try
                 {
-                    Console.WriteLine("Please Select an option or service operation");
-                    Console.WriteLine("1.GetEMVCommands");
-                    Console.Write("Enter Option Number:-");
+                    WriteLine("Please Select an option or service operation");
+                    WriteLine("1.GetEMVCommands");
+                    Write("Enter Option Number:-");
 
-                    var keyInfo = Console.ReadKey();
-                    Console.WriteLine();
+                    var keyInfo = ReadKey();
+                    WriteLine();
 
                     switch (keyInfo.Key)
                     {
@@ -55,7 +57,7 @@ namespace DecryptV2.DemoApp
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    WriteLine(ex.Message);
                 }
             }
         }
@@ -64,11 +66,11 @@ namespace DecryptV2.DemoApp
             ConsoleKey response;
             do
             {
-                Console.Write($"{ title } [y/n] ");
-                response = Console.ReadKey(false).Key;
+                Write($"{ title } [y/n] ");
+                response = ReadKey(false).Key;
                 if (response != ConsoleKey.Enter)
                 {
-                    Console.WriteLine();
+                    WriteLine();
                 }
             } while (response != ConsoleKey.Y && response != ConsoleKey.N);
 

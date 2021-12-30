@@ -11,6 +11,9 @@ using System.Xml.Linq;
 
 namespace PPSCRAv2.UIFactory
 {
+    /// <summary>
+    /// Factory of PPSCRAv2 Operations
+    /// </summary>
     public class PPSCRAv2UIFactory : IPPSCRAv2UIFactory
     {
         private readonly IServiceProvider _serviceProvider;
@@ -69,14 +72,16 @@ namespace PPSCRAv2.UIFactory
                 request.KeyType = Read_KeyType_Input("Please enter the KeyType:");
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetCertLoadCommand(request).Result;
-                if (responseDto != null)
+                var result = svc.GetCertLoadCommand(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetCertLoadCommandResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -104,14 +109,16 @@ namespace PPSCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetCommandListByDevice(request).Result;
-                if (responseDto != null)
+                var result = svc.GetCommandListByDevice(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetCommandListByDeviceResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -142,14 +149,16 @@ namespace PPSCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetDeviceAuthCommand(request).Result;
-                if (responseDto != null)
+                var result = svc.GetDeviceAuthCommand(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetDeviceAuthCommandResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -180,14 +189,16 @@ namespace PPSCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetEnableSREDCommand(request).Result;
-                if (responseDto != null)
+                var result = svc.GetEnableSREDCommand(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetEnableSREDCommandResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -214,14 +225,16 @@ namespace PPSCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetKeyList(request).Result;
-                if (responseDto != null)
+                var result = svc.GetKeyList(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetKeyListResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -254,14 +267,16 @@ namespace PPSCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetKeyLoadCommand(request).Result;
-                if (responseDto != null)
+                var result = svc.GetKeyLoadCommand(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetKeyLoadCommandResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -286,7 +301,7 @@ namespace PPSCRAv2.UIFactory
                 request.CustomerTransactionId = Read_String_Input("Please enter the CustomerTransactionID:", true);
                 request.AdditionalRequestData = Read_MultipleKeysInput("AdditionalRequestData");
                 request.Challenge = Read_Challenge_Input("Please enter the Challenge:", false);
-                request.DeviceConfigCommands = Read_multipleConfigueCommands("Please enter Configue commands").ToArray();
+                request.DeviceConfigCommands = Read_multipleConfigCommands("Config commands").ToArray();
                 request.DeviceType = Read_DeviceType_Input("Please enter the DeviceType:");
                 request.ExistingConfig = Read_String_Input("Please enter the ExistingConfig:", true);
                 request.KSN = Read_String_Input("Please enter the KSN:", false);
@@ -294,14 +309,16 @@ namespace PPSCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetLoadConfigCommand(request).Result;
-                if (responseDto != null)
+                var result = svc.GetLoadConfigCommand(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetLoadConfigCommandResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -334,14 +351,16 @@ namespace PPSCRAv2.UIFactory
 
                 Console.WriteLine("=====================Request building End======================");
                 var svc = _serviceProvider.GetService<IPPSCRAv2Client>();
-                var responseDto = svc.GetPreActivateCommand(request).Result;
-                if (responseDto != null)
+                var result = svc.GetPreActivateCommand(request);
+                if ((result.Response != null) && (result.SoapDetails != null))
                 {
-                    var response = responseDto as GetPreActivateCommandResponseDto;
-                    Console.WriteLine("=====================Response Start======================");
-                    Console.WriteLine("Response:");
-                    Console.Write(PrettyXml(response.PageContent) + "\n");
-                    Console.WriteLine("=====================Response End======================");
+                    Console.WriteLine("=====================Request XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.RequestXml) + "\n");
+                    Console.WriteLine("=====================Response XML======================");
+                    Console.Write(PrettyXml(result.SoapDetails.ResponseXml) + "\n");
+                    Console.WriteLine("=====================Parsed Response======================");
+                    Console.WriteLine(result.Response.ToString());
+                    Console.WriteLine("==========================================================");
                 }
                 else
                 {
@@ -431,6 +450,12 @@ namespace PPSCRAv2.UIFactory
             }
             return ans;
         }
+        /// <summary>
+        /// Accepts large string input, as the default string implemenattion has limitations.
+        /// </summary>
+        /// <param name="userMessage"></param>
+        /// <param name="isOptional"></param>
+        /// <returns></returns>
         private static string Read_LongString_Input(string userMessage, bool isOptional)
         {
             Console.WriteLine(userMessage);
@@ -444,6 +469,11 @@ namespace PPSCRAv2.UIFactory
             }
             return strInput;
         }
+        /// <summary>
+        /// validates string is a valid xml or not
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns></returns>
         public static bool IsValidXml(string xml)
         {
             try
@@ -456,6 +486,11 @@ namespace PPSCRAv2.UIFactory
                 return false;
             }
         }
+        /// <summary>
+        /// Validates the xml string input and returns the formatted xml string
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns></returns>
         public static string PrettyXml(string xml)
         {
             if (IsValidXml(xml)) //print xml in beautiful format
@@ -510,7 +545,7 @@ namespace PPSCRAv2.UIFactory
             }
             return int.Parse(userInputVal);
         }
-        private static List<DeviceConfigCommanddto> Read_multipleConfigueCommands(string question)
+        private static List<DeviceConfigCommanddto> Read_multipleConfigCommands(string question)
         {
             var noOfKeys = Read_Intuser_Input($"Please Enter No of Keys for {question}");
             var result = new List<DeviceConfigCommanddto>();

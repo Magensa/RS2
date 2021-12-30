@@ -1,17 +1,16 @@
 ﻿using PPSCRAv2.Dtos;
-using System.Threading.Tasks;
 
 namespace PPSCRAv2.ServiceFactory
 {
     public interface IPPSCRAv2Client
     {
-        Task<GetCertLoadCommandResponseDto> GetCertLoadCommand(GetCertLoadCommandRequestDto dto);
-        Task<GetCommandListByDeviceResponseDto> GetCommandListByDevice(GetCommandListByDeviceRequestDto dto);
-        Task<GetDeviceAuthCommandResponseDto> GetDeviceAuthCommand(GetDeviceAuthCommandRequestDto dto);
-        Task<GetEnableSREDCommandResponseDto> GetEnableSREDCommand(GetEnableSREDCommandRequestDto dto);
-        Task<GetKeyListResponseDto> GetKeyList(GetKeyListRequestDto dto);
-        Task<GetKeyLoadCommandResponseDto> GetKeyLoadCommand(GetKeyLoadCommandRequestDto dto);
-        Task<GetLoadConfigCommandResponseDto> GetLoadConfigCommand(GetLoadConfigCommandRequestDto dto);
-        Task<GetPreActivateCommandResponseDto> GetPreActivateCommand(GetPreActivateCommandRequestDto dto);
+        (GetCertLoadCommandResponseDto Response, RawSoapDetails SoapDetails) GetCertLoadCommand(GetCertLoadCommandRequestDto dto);
+        (GetCommandListByDeviceResponseDto Response,RawSoapDetails SoapDetails) GetCommandListByDevice(GetCommandListByDeviceRequestDto dto);
+        (GetDeviceAuthCommandResponseDto Response, RawSoapDetails SoapDetails) GetDeviceAuthCommand(GetDeviceAuthCommandRequestDto dto);
+        (GetEnableSREDCommandResponseDto Response, RawSoapDetails SoapDetails) GetEnableSREDCommand(GetEnableSREDCommandRequestDto dto);
+        (GetKeyListResponseDto Response, RawSoapDetails SoapDetails) GetKeyList(GetKeyListRequestDto dto);
+        (GetKeyLoadCommandResponseDto Response, RawSoapDetails SoapDetails) GetKeyLoadCommand(GetKeyLoadCommandRequestDto dto);
+        (GetLoadConfigCommandResponseDto Response,RawSoapDetails SoapDetails) GetLoadConfigCommand(GetLoadConfigCommandRequestDto dto);
+        (GetPreActivateCommandResponseDto Response,RawSoapDetails SoapDetails) GetPreActivateCommand(GetPreActivateCommandRequestDto dto);
     }
 }

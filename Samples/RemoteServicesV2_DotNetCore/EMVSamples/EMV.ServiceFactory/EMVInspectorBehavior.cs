@@ -1,10 +1,20 @@
-﻿using System.ServiceModel.Description;
+﻿using System.Collections.Generic;
+using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 
 namespace EMV.ServiceFactory
 {
+    /// <summary>
+    /// defines soap inspector beharior
+    /// </summary>
     public class EMVInspectorBehavior : IEndpointBehavior
     {
+        private readonly EMVMessageInspector myMessageInspector = new EMVMessageInspector();
+
+        public List<KeyValuePair<string, string>> ModifyTags { get; set; }
+        /// <summary>
+        /// Last requested soap xml
+        /// </summary>
         public string LastRequestXML
         {
             get
@@ -12,7 +22,9 @@ namespace EMV.ServiceFactory
                 return myMessageInspector.LastRequestXML;
             }
         }
-
+        /// <summary>
+        /// Last received response soap xml
+        /// </summary>
         public string LastResponseXML
         {
             get
@@ -22,7 +34,6 @@ namespace EMV.ServiceFactory
         }
 
 
-        private readonly EMVMessageInspector myMessageInspector = new EMVMessageInspector();
         public void AddBindingParameters(ServiceEndpoint endpoint, System.ServiceModel.Channels.BindingParameterCollection bindingParameters)
         {
 
@@ -41,6 +52,7 @@ namespace EMV.ServiceFactory
 
         public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
         {
+            myMessageInspector.ModifyTags = ModifyTags;
             clientRuntime.ClientMessageInspectors.Add(myMessageInspector);
         }
     }

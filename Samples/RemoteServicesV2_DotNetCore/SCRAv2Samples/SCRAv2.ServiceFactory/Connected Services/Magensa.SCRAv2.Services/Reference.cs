@@ -9,6 +9,7 @@
 
 namespace Magensa.SCRAv2.Services
 {
+    using System;
     using System.Runtime.Serialization;
     
     
@@ -589,6 +590,7 @@ namespace Magensa.SCRAv2.Services
                 this.CommandField = value;
             }
         }
+
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

@@ -1,9 +1,10 @@
-﻿using System.ServiceModel.Channels;
-using System.ServiceModel.Dispatcher;
-using System.Xml;
+﻿using System.ServiceModel.Dispatcher;
 
 namespace SCRAv2.ServiceFactory
 {
+    /// <summary>
+    /// Inspects SCRAv2 soap request to modify or to view the soaprequest/soapresponse.
+    /// </summary>
     public class SCRAv2MessageInspector : IClientMessageInspector
     {
         public string LastRequestXML { get; private set; }

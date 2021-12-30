@@ -3,8 +3,14 @@ using System.ServiceModel.Dispatcher;
 
 namespace SCRAv2.ServiceFactory
 {
+    /// <summary>
+    /// defines soap inspector beharior
+    /// </summary>
     public class SCRAv2InspectorBehavior : IEndpointBehavior
     {
+        /// <summary>
+        /// Last requested soap xml
+        /// </summary>
         public string LastRequestXML
         {
             get
@@ -12,7 +18,9 @@ namespace SCRAv2.ServiceFactory
                 return myMessageInspector.LastRequestXML;
             }
         }
-
+        /// <summary>
+        /// Last received response soap xml
+        /// </summary>
         public string LastResponseXML
         {
             get
